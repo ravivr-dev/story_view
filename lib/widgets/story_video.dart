@@ -33,6 +33,9 @@ class VideoLoader {
     fileStream.listen((fileResponse) {
       log("Sending file stream $fileResponse", name: "STORY VIEW");
       if (fileResponse is FileInfo) {
+        log(fileResponse.file.path.toString(), name: "STORY VIEW");
+        log(fileResponse.source.toString(), name: "STORY VIEW");
+        log(fileResponse.originalUrl.toString(), name: "STORY VIEW");
         if (this.videoFile == null) {
           this.state = LoadState.success;
           this.videoFile = fileResponse.file;
