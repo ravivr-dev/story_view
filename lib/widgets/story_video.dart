@@ -106,19 +106,20 @@ class StoryVideoState extends State<StoryVideo> {
               );
             },
           );
-        });
-        setState(() {});
 
-        if (widget.storyController != null) {
-          _streamSubscription =
-              widget.storyController!.playbackNotifier.listen((playbackState) {
-            if (playbackState == PlaybackState.pause) {
-              _chewieController!.pause();
-            } else {
-              _chewieController!.play();
-            }
-          });
-        }
+          setState(() {});
+
+          if (widget.storyController != null) {
+            _streamSubscription = widget.storyController!.playbackNotifier
+                .listen((playbackState) {
+              if (playbackState == PlaybackState.pause) {
+                _chewieController!.pause();
+              } else {
+                _chewieController!.play();
+              }
+            });
+          }
+        });
       } else {
         setState(() {});
       }
