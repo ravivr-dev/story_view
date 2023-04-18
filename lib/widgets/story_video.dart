@@ -31,11 +31,11 @@ class VideoLoader {
         headers: this.requestHeaders as Map<String, String>?);
 
     fileStream.listen((fileResponse) {
-      log("Sending file stream $fileResponse", name: "STORY VIEW");
+      log("Sending file stream $fileResponse", name: "STORY VIEW STREAM");
       if (fileResponse is FileInfo) {
-        log(fileResponse.file.path.toString(), name: "STORY VIEW");
-        log(fileResponse.source.toString(), name: "STORY VIEW");
-        log(fileResponse.originalUrl.toString(), name: "STORY VIEW");
+        log(fileResponse.file.path.toString(), name: "STORY VIEW FILE");
+        log(fileResponse.source.toString(), name: "STORY VIEW SOURCE");
+        log(fileResponse.originalUrl.toString(), name: "STORY VIEW ORIGINAL URL");
         if (this.videoFile == null) {
           this.state = LoadState.success;
           this.videoFile = fileResponse.file;
