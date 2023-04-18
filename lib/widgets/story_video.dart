@@ -31,7 +31,7 @@ class VideoLoader {
         headers: this.requestHeaders as Map<String, String>?);
 
     fileStream.listen((fileResponse) {
-      log("Sending file stream", name: "STORY VIEW");
+      log("Sending file stream $fileResponse", name: "STORY VIEW");
       if (fileResponse is FileInfo) {
         if (this.videoFile == null) {
           this.state = LoadState.success;
@@ -87,7 +87,6 @@ class StoryVideoState extends State<StoryVideo> {
             VideoPlayerController.file(widget.videoLoader.videoFile!);
 
         playerController!.initialize().then((v) {
-          setState(() {});
           widget.storyController!.play();
           _chewieController = ChewieController(
             showControls: false,
@@ -108,14 +107,15 @@ class StoryVideoState extends State<StoryVideo> {
             },
           );
         });
+        setState(() {});
 
         if (widget.storyController != null) {
           _streamSubscription =
               widget.storyController!.playbackNotifier.listen((playbackState) {
             if (playbackState == PlaybackState.pause) {
-              playerController!.pause();
+              _chewieController!.pause();
             } else {
-              playerController!.play();
+              _chewieController!.play();
             }
           });
         }
