@@ -151,7 +151,7 @@ class StoryVideoState extends State<StoryVideo> {
     }
     if(widget.videoLoader.state == LoadState.success &&
        ( !playerController!.value.isInitialized ||
-        _chewieController != null)){
+        _chewieController == null)){
       return Center(
         child: Container(
           width: 70,
