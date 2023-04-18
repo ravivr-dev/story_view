@@ -22,6 +22,11 @@ class VideoLoader {
   VideoLoader(this.url, {this.requestHeaders});
 
   void loadVideo(VoidCallback onComplete) {
+    if(this.url.contains("m3u8")){
+      this.state = LoadState.success;
+      onComplete();
+      return;
+    }
     if (this.videoFile != null) {
       this.state = LoadState.success;
       onComplete();
@@ -35,7 +40,8 @@ class VideoLoader {
       if (fileResponse is FileInfo) {
         log(fileResponse.file.path.toString(), name: "STORY VIEW FILE");
         log(fileResponse.source.toString(), name: "STORY VIEW SOURCE");
-        log(fileResponse.originalUrl.toString(), name: "STORY VIEW ORIGINAL URL");
+        log(fileResponse.originalUrl.toString(),
+            name: "STORY VIEW ORIGINAL URL");
         if (this.videoFile == null) {
           this.state = LoadState.success;
           this.videoFile = fileResponse.file;
@@ -86,8 +92,9 @@ class StoryVideoState extends State<StoryVideo> {
 
     widget.videoLoader.loadVideo(() {
       if (widget.videoLoader.state == LoadState.success) {
-        this.playerController =
-            VideoPlayerController.file(widget.videoLoader.videoFile!);
+        this.playerController = widget.videoLoader.url.contains("m3u8")
+            ? VideoPlayerController.network(widget.videoLoader.url)
+            : VideoPlayerController.file(widget.videoLoader.videoFile!);
 
         playerController!.initialize().then((v) {
           widget.storyController!.play();
