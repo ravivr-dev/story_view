@@ -149,9 +149,22 @@ class StoryVideoState extends State<StoryVideo> {
         ),
       );
     }
+    if(widget.videoLoader.state == LoadState.success &&
+       ( !playerController!.value.isInitialized ||
+        _chewieController != null)){
+      return Center(
+        child: Container(
+          width: 70,
+          height: 70,
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            strokeWidth: 3,
+          ),
+        ),
+      );
+    }
 
-    return widget.videoLoader.state == LoadState.loading ||
-            _chewieController == null
+    return widget.videoLoader.state == LoadState.loading
         ? Center(
             child: Container(
               width: 70,
