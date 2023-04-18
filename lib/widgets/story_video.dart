@@ -22,7 +22,7 @@ class VideoLoader {
   VideoLoader(this.url, {this.requestHeaders});
 
   void loadVideo(VoidCallback onComplete) {
-    if(this.url.contains("m3u8")){
+    if (this.url.contains("m3u8")) {
       this.state = LoadState.success;
       onComplete();
       return;
@@ -150,7 +150,8 @@ class StoryVideoState extends State<StoryVideo> {
       );
     }
 
-    return widget.videoLoader.state == LoadState.loading
+    return widget.videoLoader.state == LoadState.loading ||
+            _chewieController == null
         ? Center(
             child: Container(
               width: 70,
