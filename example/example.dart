@@ -1,4 +1,4 @@
-mport 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:story_view/story_view.dart';
 
 void main() => runApp(MyApp());

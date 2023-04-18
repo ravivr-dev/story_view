@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:video_player/video_player.dart';
@@ -25,10 +27,11 @@ class VideoLoader {
       onComplete();
     }
 
-    final fileStream = DefaultCacheManager()
-        .getFileStream(this.url, headers: this.requestHeaders as Map<String, String>?);
+    final fileStream = DefaultCacheManager().getFileStream(this.url,
+        headers: this.requestHeaders as Map<String, String>?);
 
     fileStream.listen((fileResponse) {
+      log("Sending file stream", name: "STORY VIEW");
       if (fileResponse is FileInfo) {
         if (this.videoFile == null) {
           this.state = LoadState.success;
@@ -70,6 +73,7 @@ class StoryVideoState extends State<StoryVideo> {
   StreamSubscription? _streamSubscription;
 
   VideoPlayerController? playerController;
+  ChewieController? _chewieController;
 
   @override
   void initState() {
@@ -85,6 +89,24 @@ class StoryVideoState extends State<StoryVideo> {
         playerController!.initialize().then((v) {
           setState(() {});
           widget.storyController!.play();
+          _chewieController = ChewieController(
+            showControls: false,
+            autoPlay: false,
+            looping: true,
+            autoInitialize: true,
+            showOptions: false,
+            allowedScreenSleep: false,
+            videoPlayerController: playerController!,
+            // aspectRatio: _videoPlayerController!.value.aspectRatio,
+            errorBuilder: (context, errorMessage) {
+              return Center(
+                child: Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
+            },
+          );
         });
 
         if (widget.storyController != null) {
@@ -105,11 +127,14 @@ class StoryVideoState extends State<StoryVideo> {
 
   Widget getContentView() {
     if (widget.videoLoader.state == LoadState.success &&
-        playerController!.value.isInitialized) {
+        playerController!.value.isInitialized &&
+        _chewieController != null) {
       return Center(
         child: AspectRatio(
           aspectRatio: playerController!.value.aspectRatio,
-          child: VideoPlayer(playerController!),
+          child: Chewie(
+            controller: _chewieController!,
+          ),
         ),
       );
     }
@@ -146,6 +171,7 @@ class StoryVideoState extends State<StoryVideo> {
 
   @override
   void dispose() {
+    _chewieController?.dispose();
     playerController?.dispose();
     _streamSubscription?.cancel();
     super.dispose();
