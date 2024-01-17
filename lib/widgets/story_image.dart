@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import '../utils.dart';
 import '../controller/story_controller.dart';
+import '../utils.dart';
 
 /// Utitlity to load image (gif, png, jpg, etc) media just once. Resource is
 /// cached to disk with default configurations of [DefaultCacheManager].
@@ -46,8 +45,7 @@ class ImageLoader {
 
         this.state = LoadState.success;
 
-        PaintingBinding.instance!.instantiateImageCodec(imageBytes).then(
-            (codec) {
+        ui.instantiateImageCodec(imageBytes).then((codec) {
           this.frames = codec;
           onComplete();
         }, onError: (error) {
@@ -63,6 +61,7 @@ class ImageLoader {
   }
 }
 
+
 /// Widget to display animated gifs or still images. Shows a loader while image
 /// is being loaded. Listens to playback states from [controller] to pause and
 /// forward animated media.
@@ -74,20 +73,20 @@ class StoryImage extends StatefulWidget {
   final StoryController? controller;
 
   StoryImage(
-    this.imageLoader, {
-    Key? key,
-    this.controller,
-    this.fit,
-  }) : super(key: key ?? UniqueKey());
+      this.imageLoader, {
+        Key? key,
+        this.controller,
+        this.fit,
+      }) : super(key: key ?? UniqueKey());
 
   /// Use this shorthand to fetch images/gifs from the provided [url]
   factory StoryImage.url(
-    String url, {
-    StoryController? controller,
-    Map<String, dynamic>? requestHeaders,
-    BoxFit fit = BoxFit.fitWidth,
-    Key? key,
-  }) {
+      String url, {
+        StoryController? controller,
+        Map<String, dynamic>? requestHeaders,
+        BoxFit fit = BoxFit.fitWidth,
+        Key? key,
+      }) {
     return StoryImage(
         ImageLoader(
           url,
@@ -116,17 +115,17 @@ class StoryImageState extends State<StoryImage> {
     if (widget.controller != null) {
       this._streamSubscription =
           widget.controller!.playbackNotifier.listen((playbackState) {
-        // for the case of gifs we need to pause/play
-        if (widget.imageLoader.frames == null) {
-          return;
-        }
+            // for the case of gifs we need to pause/play
+            if (widget.imageLoader.frames == null) {
+              return;
+            }
 
-        if (playbackState == PlaybackState.pause) {
-          this._timer?.cancel();
-        } else {
-          forward();
-        }
-      });
+            if (playbackState == PlaybackState.pause) {
+              this._timer?.cancel();
+            } else {
+              forward();
+            }
+          });
     }
 
     widget.controller?.pause();
@@ -189,11 +188,11 @@ class StoryImageState extends State<StoryImage> {
       case LoadState.failure:
         return Center(
             child: Text(
-          "Image failed to load.",
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ));
+              "Image failed to load.",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ));
       default:
         return Center(
           child: Container(
@@ -217,3 +216,4 @@ class StoryImageState extends State<StoryImage> {
     );
   }
 }
+
